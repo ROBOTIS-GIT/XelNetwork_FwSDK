@@ -32,8 +32,10 @@ static ctable_t *p_ctable_cmd = NULL;
 
 //-- Internal Functions
 //
+#ifdef _USE_HW_CMDIF_CTABLE
 void ctableCmdifInit(void);
 int ctableCmdif(int argc, char **argv);
+#endif
 
 
 //-- External Functions
