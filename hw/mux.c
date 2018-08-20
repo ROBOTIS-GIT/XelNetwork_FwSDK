@@ -82,7 +82,6 @@ uint8_t muxGetChannel(uint8_t id)
 bool muxScanChannel(uint8_t ch)
 {
 	uint8_t i;
-	uint8_t ret;
 	uint8_t ret_ch;
 
 	for(i=0;i<MUX_MAX_CH;i++)
