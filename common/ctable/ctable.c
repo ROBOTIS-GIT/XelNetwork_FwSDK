@@ -38,6 +38,9 @@ int ctableCmdif(int argc, char **argv);
 #endif
 
 
+uint8_t ctableReadUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode);
+uint8_t ctableWriteUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode);
+
 //-- External Functions
 //
 
@@ -106,53 +109,42 @@ void ctableUpdate(ctable_t *p_ctable)
     {
       if ((addr+length) < p_ctable->mem_length)
       {
-        if (p_ctable->p_mem != NULL)
+        for (j=0; j<p_ctable->p_attr[i].count; j++)
         {
-          for (j=0; j<p_ctable->p_attr[i].count; j++)
-          {
-            memcpy(&p_ctable->p_mem[addr + j * length], (uint8_t *)&p_ctable->p_attr[i].init_data, length);
-          }
+          ctableWriteUpdate(p_ctable, addr + j * length, (uint8_t *)&p_ctable->p_attr[i].init_data, length, _UPDATE_INIT);
         }
       }
       p_ctable->p_attr[i].update &= ~_UPDATE_INIT;
     }
 
-    if (p_ctable->p_attr[i].update & _UPDATE_RD)
+    if (p_ctable->p_attr[i].update & _UPDATE_STARTUP)
     {
-      if ((p_ctable->p_attr[i].attr & _ATTR_VIR) == 0)
+      if ((addr+length) < p_ctable->mem_length)
       {
-        if (p_ctable->p_mem != NULL)
+        for (j=0; j<p_ctable->p_attr[i].count; j++)
         {
-          ctableRead(p_ctable, addr, &p_ctable->p_mem[addr], length);
+          ctableWriteUpdate(p_ctable, addr + j * length, (uint8_t *)&p_ctable->p_attr[i].init_data, length, _UPDATE_STARTUP);
         }
       }
-      p_ctable->p_attr[i].update &= ~_UPDATE_RD;
+      p_ctable->p_attr[i].update &= ~_UPDATE_STARTUP;
     }
 
-    if (p_ctable->p_attr[i].update & _UPDATE_WR)
-    {
-      if ((p_ctable->p_attr[i].attr & _ATTR_VIR) == 0)
-      {
-        if (p_ctable->p_mem != NULL)
-        {
-          ctableWrite(p_ctable, addr, &p_ctable->p_mem[addr], length);
-        }
-      }
-      else
-      {
-        // 가상메모리면 초기값을 Write
-        ctableWrite(p_ctable, addr, (uint8_t *)&p_ctable->p_attr[i].init_data, length);
-      }
-      p_ctable->p_attr[i].update &= ~_UPDATE_WR;
-    }
   }
 }
 
 uint8_t ctableRead(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length)
 {
+  uint8_t ret;
+
+  ret = ctableReadUpdate(p_ctable, addr, p_data, length, _UPDATE_RD);
+
+  return ret;
+}
+
+uint8_t ctableReadUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode)
+{
   uint8_t ret = DXL_ERR_NONE;
   uint16_t i;
-  uint16_t j;
   uint16_t node_addr_start;
   uint16_t node_addr_end;
   uint16_t node_length;
@@ -200,40 +192,17 @@ uint8_t ctableRead(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t 
     {
       p_ctable->data_type = p_ctable->p_attr[i].module;
 
-      if (p_ctable->p_attr[i].attr & _ATTR_EEPROM)
-      {
-        for (j=node_addr_start; j<node_addr_end; j++)
-        {
-          if (p_ctable->p_mem != NULL)
-          {
-            #ifdef _USE_HW_EEPROM
-            p_ctable->p_mem[j] = eepromReadByte(j);
-            //cmdifPrintf("rd eep addr : %d %d %d %d\n", p_ctable->p_attr[i].address, j, p_ctable->p_mem[node_addr_start], eepromReadByte(j) );
-            #endif
-          }
-        }
-      }
 
-      if ((p_ctable->p_attr[i].attr & _ATTR_VIR) > 0)
-      {
-        memset(&p_data[node_addr_start-addr_start], 0x00, node_length);
-      }
+      memset(&p_data[node_addr_start-addr_start], 0x00, node_length);
 
       if (p_ctable->p_attr[i].update_func != NULL)
       {
-        (*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, _UPDATE_RD, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
-        //cmdifPrintf("rd addr : %d %d %d %d\n", p_ctable->p_attr[i].address, node_addr_start-addr_start, node_addr_start - p_ctable->p_attr[i].address, node_length );
+        //(*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, mode, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
+        (*p_ctable->p_attr[i].update_func)(p_ctable->p_attr[i].address, mode, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
       }
-
-      if ((p_ctable->p_attr[i].attr & _ATTR_VIR) == 0)
+      else
       {
-        if (node_addr_end < p_ctable->mem_length)
-        {
-          if (p_ctable->p_mem != NULL)
-          {
-            memcpy(&p_data[node_addr_start-addr_start], &p_ctable->p_mem[node_addr_start], node_length);
-          }
-        }
+        memcpy(&p_data[node_addr_start-addr_start], &p_ctable->p_attr[i].init_data, node_length);
       }
     }
   }
@@ -242,9 +211,17 @@ uint8_t ctableRead(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t 
 
 uint8_t ctableWrite(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length)
 {
+  uint8_t ret;
+
+  ret = ctableWriteUpdate(p_ctable, addr, p_data, length, _UPDATE_WR);
+
+  return ret;
+}
+
+uint8_t ctableWriteUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode)
+{
   uint8_t ret = DXL_ERR_NONE;
   uint16_t i;
-  uint16_t j;
   uint16_t node_addr_start;
   uint16_t node_addr_end;
   uint16_t node_length;
@@ -295,33 +272,10 @@ uint8_t ctableWrite(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t
     {
       if (p_ctable->p_attr[i].attr & _ATTR_WR)
       {
-        if ((p_ctable->p_attr[i].attr & _ATTR_VIR) == 0)
-        {
-          if (p_ctable->p_mem != NULL)
-          {
-            memcpy(&p_ctable->p_mem[node_addr_start], &p_data[node_addr_start-addr_start], node_length);
-          }
-        }
-
         if (p_ctable->p_attr[i].update_func != NULL)
         {
-          (*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, _UPDATE_WR, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
-          //cmdifPrintf("wr addr : %d %d %d %d %d\n", p_ctable->p_attr[i].address, node_addr_start-addr_start, node_addr_start - p_ctable->p_attr[i].address, node_length );
-        }
-
-        if (p_ctable->p_attr[i].attr & _ATTR_EEPROM)
-        {
-          for (j=node_addr_start; j<node_addr_end; j++)
-          {
-            if (p_ctable->p_mem != NULL)
-            {
-              #ifdef _USE_HW_EEPROM
-              eepromWriteByte(j, p_ctable->p_mem[j]);
-
-              //cmdifPrintf("wr eep addr : %d %d %d %d\n", p_ctable->p_attr[i].address, j, p_ctable->p_mem[j], node_length );
-              #endif
-            }
-          }
+          //(*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, mode, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
+          (*p_ctable->p_attr[i].update_func)(p_ctable->p_attr[i].address, mode, node_addr_start - p_ctable->p_attr[i].address, &p_data[node_addr_start-addr_start], node_length);
         }
       }
       else
@@ -369,7 +323,8 @@ void ctableReset(ctable_t *p_ctable)
       {
         if (p_ctable->p_attr[i].update_func != NULL)
         {
-          (*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, _UPDATE_RESET, p_ctable->p_attr[i].address, NULL, 0);
+          //(*p_ctable->p_attr[i].update_func)((void *)p_ctable, i, _UPDATE_RESET, p_ctable->p_attr[i].address, NULL, 0);
+          (*p_ctable->p_attr[i].update_func)(p_ctable->p_attr[i].address, _UPDATE_RESET, p_ctable->p_attr[i].address, NULL, 0);
         }
       }
     }

@@ -38,6 +38,7 @@
 #define _UPDATE_INIT        (1<<3)
 #define _UPDATE_RESET       (1<<4)
 #define _UPDATE_NOT_RESET   (1<<5)
+#define _UPDATE_STARTUP     (1<<6)
 
 
 
@@ -55,6 +56,8 @@ typedef struct
 } ctable_param_t;
 
 
+typedef struct ctable_t_ ctable_t;
+
 typedef struct ctable_attribute_t_
 {
   uint16_t  address;
@@ -64,11 +67,11 @@ typedef struct ctable_attribute_t_
   int32_t   init_data;
   uint8_t   update;
   uint16_t  module;
-  void     (*update_func)(void *arg, uint16_t index, uint8_t mode, uint16_t offset, uint8_t *p_data, uint16_t offset_length);
+  void     (*update_func)(uint32_t addr, uint8_t mode, uint16_t update_addr, uint8_t *p_data, uint16_t update_length);
 } ctable_attribute_t;
 
 
-typedef struct
+typedef struct ctable_t_
 {
   bool                init;
   uint8_t            *p_mem;
@@ -88,6 +91,8 @@ void ctableRemoveReset(ctable_t *p_ctable, uint16_t addr);
 uint8_t ctableRead(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length);
 uint8_t ctableWrite(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length);
 
+uint8_t ctableWriteUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode);
+uint8_t ctableWriteUpdate(ctable_t *p_ctable, uint16_t addr, uint8_t *p_data, uint16_t length, uint8_t mode);
 
 #ifdef __cplusplus
 }
