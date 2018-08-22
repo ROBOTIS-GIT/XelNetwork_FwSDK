@@ -97,8 +97,8 @@ bool cmdReceivePacket(cmd_t *p_cmd)
 	if((millis()-p_cmd->save_time[0]) > CMD_BYTE_TIMEOUT_MS)
 	{
 		p_cmd->state        = CMD_STATE_WAIT_STX;
-		p_cmd->save_time[0] = millis();
 	}
+	p_cmd->save_time[0] = millis();
 
 	//-- 명령어 상태
 	//
