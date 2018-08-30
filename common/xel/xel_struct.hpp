@@ -49,16 +49,15 @@ enum DataType
   IMU
 };
 
-struct XelHeader_t
+typedef struct XelHeader
 {
-  uint8_t              xel_id;
   XelNetwork::DataType data_type;
   uint32_t             data_get_interval_hz;
   char                 data_name[32];         //ROS2 topic name
   uint8_t              msg_type;              //ros2 message type (topic, service, action..)
   uint16_t             data_addr;
-  uint8_t              data_lenght;
-};
+  uint8_t              data_length;
+} __attribute__((packed)) XelHeader_t;
 
 struct XelStatus_t
 {
@@ -77,10 +76,12 @@ struct XelDDS_t
 
 typedef struct XelInfo
 {
-  struct XelStatus_t status;
-  struct XelHeader_t header;
-  uint8_t            data[128];
-  struct XelDDS_t    dds;
+  uint8_t                   xel_id;
+  XelHeader_t               header;
+  struct XelStatus_t        status;
+  uint8_t                   data[128];
+  XelNetwork::DataDirection data_direction;
+  struct XelDDS_t           dds;
 } XelInfo_t;
 
 
