@@ -38,7 +38,7 @@
 #define _UPDATE_INIT        (1<<3)
 #define _UPDATE_RESET       (1<<4)
 #define _UPDATE_NOT_RESET   (1<<5)
-#define _UPDATE_STARTUP     (1<<6)
+#define _UPDATE_SETUP       (1<<6)
 
 
 

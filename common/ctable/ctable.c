@@ -117,16 +117,16 @@ void ctableUpdate(ctable_t *p_ctable)
       p_ctable->p_attr[i].update &= ~_UPDATE_INIT;
     }
 
-    if (p_ctable->p_attr[i].update & _UPDATE_STARTUP)
+    if (p_ctable->p_attr[i].update & _UPDATE_SETUP)
     {
       if ((addr+length) < p_ctable->mem_length)
       {
         for (j=0; j<p_ctable->p_attr[i].count; j++)
         {
-          ctableWriteUpdate(p_ctable, addr + j * length, (uint8_t *)&p_ctable->p_attr[i].init_data, length, _UPDATE_STARTUP);
+          ctableWriteUpdate(p_ctable, addr + j * length, (uint8_t *)&p_ctable->p_attr[i].init_data, length, _UPDATE_SETUP);
         }
       }
-      p_ctable->p_attr[i].update &= ~_UPDATE_STARTUP;
+      p_ctable->p_attr[i].update &= ~_UPDATE_SETUP;
     }
 
   }
