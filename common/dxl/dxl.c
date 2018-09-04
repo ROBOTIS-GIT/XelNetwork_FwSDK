@@ -331,9 +331,15 @@ uint8_t dxlProcessPacket(dxl_t *p_packet)
       }
       else
       {
-        if (micros()-p_packet->process_pre_time >= 3000)
+        uint32_t cur_time;
+        uint32_t dif_time;
+
+        cur_time = micros();
+        dif_time = cur_time - p_packet->process_pre_time;
+
+        if (dif_time >= 3000)
         {
-          p_packet->process_pre_time = micros();
+          p_packet->process_pre_time = cur_time - (dif_time - 3000);
           p_packet->current_id++;
         }
       }
