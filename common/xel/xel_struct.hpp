@@ -46,7 +46,10 @@ enum DataType
   QUATERNION,
   POINT,
   TWIST,
-  IMU
+  IMU,
+  MILLIS,
+  LED,
+  ANALOG
 };
 
 typedef struct XelHeader
