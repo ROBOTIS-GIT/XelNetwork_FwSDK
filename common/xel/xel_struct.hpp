@@ -17,7 +17,8 @@ namespace XelNetwork
 enum DataDirection
 {
   SEND = 0,
-  RECEIVE
+  RECEIVE,
+  SEND_RECV
 };
 
 enum XelStatus
@@ -42,6 +43,7 @@ enum DataType
   UINT64,
   FLOAT32,
   FLOAT64,
+  JOINT_STATE,
   VECTOR3,
   QUATERNION,
   POINT,
@@ -54,12 +56,12 @@ enum DataType
 
 typedef struct XelHeader
 {
-  XelNetwork::DataType data_type;
-  uint32_t             data_get_interval_hz;
-  char                 data_name[32];         //ROS2 topic name
-  uint8_t              msg_type;              //ros2 message type (topic, service, action..)
-  uint16_t             data_addr;
-  uint8_t              data_length;
+  DataType      data_type;
+  uint32_t      data_get_interval_hz;
+  char          data_name[32];         //ROS2 topic name
+  DataDirection data_direction;
+  uint16_t      data_addr;
+  uint8_t       data_length;
 } __attribute__((packed)) XelHeader_t;
 
 struct XelStatus_t
@@ -72,20 +74,19 @@ struct XelStatus_t
 
 struct XelDDS_t
 {
-  char    msg_name[32];         //DDS topic name
   uint8_t msg_type;             //ROS2 message type (topic, service, action..)
-  void(*p_callback_func)(void* msg, void* arg);
   uint8_t entity_id;
+  void(*p_callback_func)(void* msg, void* arg);
 };
 
 typedef struct XelInfo
 {
   uint8_t                   xel_id;
-  XelHeader_t               header;
-  struct XelStatus_t        status;
+  uint16_t                  model_id;
   uint8_t                   data[128];
-  XelNetwork::DataDirection data_direction;
+  XelHeader_t               header;
   struct XelDDS_t           dds;
+  struct XelStatus_t        status;
 } XelInfo_t;
 
 
