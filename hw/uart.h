@@ -39,6 +39,7 @@ uint32_t    uartGetTxCount(uint8_t channel);
 uint32_t    uartGetTxRetryCount(uint8_t channel);
 
 uint32_t    uartGetRxCount(uint8_t channel);
+uint32_t    uartGetBaud(uint8_t channel);
 
 #endif /* _USE_HW_UART */
 

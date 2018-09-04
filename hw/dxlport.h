@@ -31,6 +31,7 @@ void dxlportTxDisable(uint8_t ch);
 void dxlportSetTxDoneISR(uint8_t ch, void (*p_txDoneISR)(void));
 bool dxlportIsTxDone(uint8_t ch);
 
+uint32_t dxlportGetBaud(uint8_t ch);
 uint32_t dxlportAvailable(uint8_t ch);
 uint8_t  dxlportRead(uint8_t ch);
 uint32_t dxlportWrite(uint8_t ch, uint8_t *p_data, uint32_t length);

@@ -146,6 +146,11 @@ uint32_t dxlportWritePoll(uint8_t ch, uint8_t *p_data, uint32_t length, uint32_t
   return ret;
 }
 
+uint32_t dxlportGetBaud(uint8_t ch)
+{
+  return drvDxlportGetBaud(ch);
+}
+
 bool dxlportIsTxDone(uint8_t ch)
 {
   return drvDxlportIsTxDone(ch);
