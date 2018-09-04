@@ -75,6 +75,7 @@ struct XelDDS_t
   char    msg_name[32];         //DDS topic name
   uint8_t msg_type;             //ROS2 message type (topic, service, action..)
   void(*p_callback_func)(void* msg, void* arg);
+  uint8_t entity_id;
 };
 
 typedef struct XelInfo

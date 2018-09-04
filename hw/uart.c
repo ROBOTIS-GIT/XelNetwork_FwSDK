@@ -287,4 +287,9 @@ uint32_t uartGetRxCount(uint8_t channel)
   return drvUartGetRxCount(channel);
 }
 
+uint32_t uartGetBaud(uint8_t channel)
+{
+  return drvUartGetBaud(channel);
+}
+
 #endif /* _USE_HW_UART */
