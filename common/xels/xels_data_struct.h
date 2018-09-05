@@ -72,12 +72,16 @@ typedef struct Float64
 
 typedef struct Imu
 {
+  double quat_x;
+  double quat_y;
+  double quat_z;
+  double quat_w;
   double acc_x;
   double acc_y;
   double acc_z;
-  double ang_x;
-  double ang_y;
-  double ang_z;
+  double gyro_x;
+  double gyro_y;
+  double gyro_z;
 }Imu_t;
 
 #endif /* XEL_NET_DATA_STRUCT_H_ */

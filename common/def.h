@@ -62,6 +62,11 @@
 #define _DEF_TIMER3         2
 #define _DEF_TIMER4         3
 
+#define _DEF_GPIO1           0
+#define _DEF_GPIO2           1
+#define _DEF_GPIO3           2
+#define _DEF_GPIO4           3
+
 
 #define _DEF_I2C1           0
 #define _DEF_I2C2           1

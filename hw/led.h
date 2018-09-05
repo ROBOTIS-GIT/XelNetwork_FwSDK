@@ -29,6 +29,8 @@ void ledToggle(uint8_t ch);
 void ledOnAll(void);
 void ledOffAll(void);
 
+bool ledState(uint8_t ch);
+
 
 #endif /* _USE_HW_LED */
 

@@ -105,7 +105,10 @@ void ledOffAll(void)
   }
 }
 
-
+bool ledState(uint8_t ch)
+{
+  return drvLedGetState(ch);
+}
 
 
 
