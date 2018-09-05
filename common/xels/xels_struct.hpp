@@ -8,8 +8,8 @@
 #ifndef XEL_NET_STRUCT_HPP_
 #define XEL_NET_STRUCT_HPP_
 
+#include "xels/xels_data_struct.h"
 #include "stdint.h"
-#include "xel/xel_data_struct.h"
 
 namespace XelNetwork
 {

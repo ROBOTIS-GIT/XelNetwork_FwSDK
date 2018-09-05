@@ -8,6 +8,7 @@
 #ifndef XEL_NET_DATA_STRUCT_H_
 #define XEL_NET_DATA_STRUCT_H_
 
+#include <stdint.h>
 
 typedef struct Bool
 {
