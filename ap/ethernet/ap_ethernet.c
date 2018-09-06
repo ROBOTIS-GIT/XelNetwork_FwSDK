@@ -98,6 +98,11 @@ uint32_t ethernetGetIpAddr(void)
   return gnetif.ip_addr.addr;
 }
 
+char* ethernetGetIpAddrAsString(void)
+{
+  return ip4addr_ntoa((const ip4_addr_t *) &gnetif.ip_addr);
+}
+
 uint32_t ethernetGetSubnet(void)
 {
   return gnetif.netmask.addr;

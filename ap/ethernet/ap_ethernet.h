@@ -56,6 +56,7 @@ void ethernetIfBegin(ip_assign_type_t dhcp_en, uint8_t* p_mac_addr, ip_addr_t* i
 
 uint8_t* ethernetGetMacAddr(void);
 uint32_t ethernetGetIpAddr(void);
+char*    ethernetGetIpAddrAsString(void);
 uint32_t ethernetGetSubnet(void);
 uint32_t ethernetGetGateway(void);
 
