@@ -43,7 +43,6 @@ enum DataType
   UINT64,
   FLOAT32,
   FLOAT64,
-  IMU,
   MILLIS,
   LED,
   ANALOG0,
@@ -54,7 +53,9 @@ enum DataType
   GPIO1,
   GPIO2,
   GPIO3,
-  POWER
+  POWER,
+  IMU,
+  JOYSTICK
 };
 
 typedef struct XelHeader

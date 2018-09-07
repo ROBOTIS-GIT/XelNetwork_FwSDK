@@ -84,6 +84,13 @@ typedef struct Imu
   double gyro_z;
 }Imu_t;
 
+typedef struct JoyStick
+{
+  uint32_t axis_x;
+  uint32_t axis_y;
+  bool     button;
+}JoyStick_t;
+
 typedef struct Power
 {
   uint32_t voltage;
