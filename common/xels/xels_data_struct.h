@@ -88,7 +88,7 @@ typedef struct JoyStick
 {
   uint32_t axis_x;
   uint32_t axis_y;
-  bool     button;
+  uint32_t button;
 }JoyStick_t;
 
 typedef struct Power
