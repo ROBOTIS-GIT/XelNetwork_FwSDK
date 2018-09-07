@@ -54,6 +54,7 @@ enum DataType
   GPIO1,
   GPIO2,
   GPIO3,
+  POWER
 };
 
 typedef struct XelHeader
