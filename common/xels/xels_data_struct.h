@@ -84,4 +84,10 @@ typedef struct Imu
   double gyro_z;
 }Imu_t;
 
+typedef struct Power
+{
+  uint32_t voltage;
+  uint32_t current;
+}Power_t;
+
 #endif /* XEL_NET_DATA_STRUCT_H_ */
