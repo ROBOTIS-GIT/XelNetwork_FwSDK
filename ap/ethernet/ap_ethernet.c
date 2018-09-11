@@ -78,7 +78,7 @@ void ethernetIfBegin(ip_assign_type_t dhcp_en, uint8_t* p_mac_addr, ip_addr_t* i
     ret = osThreadCreate(osThread(DHCP), &gnetif);
     if (ret == NULL)
     {
-      cmdifPrintf("osThreadCreate : threadEthernet(%X) fail\n", ret);
+      USBD_UsrLog("osThreadCreate : threadEthernet(%X) fail\n", ret);
     }
   }
   else{
