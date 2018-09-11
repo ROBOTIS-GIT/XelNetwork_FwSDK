@@ -97,4 +97,11 @@ typedef struct Power
   uint32_t current;
 }Power_t;
 
+typedef struct DXLJointState
+{
+  int32_t position;
+  int32_t velocity;
+  int16_t current;
+} DXLJoint_t;
+
 #endif /* XEL_NET_DATA_STRUCT_H_ */

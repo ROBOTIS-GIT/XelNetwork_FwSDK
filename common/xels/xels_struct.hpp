@@ -96,6 +96,7 @@ typedef struct XelInfo
 
 
 
+
 } //XelNetwork
 
 #endif /* XEL_NET_STRUCT_HPP_ */
