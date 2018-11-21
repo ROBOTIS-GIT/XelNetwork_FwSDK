@@ -55,7 +55,8 @@ enum DataType
   GPIO3,
   POWER,
   IMU,
-  JOYSTICK
+  JOYSTICK,
+  I2CTEST
 };
 
 typedef struct XelHeader
